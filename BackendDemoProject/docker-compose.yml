@@ -3,6 +3,7 @@ version: '3.7'
 services:
 
  mongo:
+   container_name: mongo
    ports:
     - 27017:27017
    image: mongo:latest
@@ -11,16 +12,18 @@ services:
 
 
  app:
-   image: node:10
-   working_dir: /home/node/app
+   container_name: node_app
+   working_dir: /app
    restart: always
+   build: .
    volumes:
-    - ./data/app:/home/node/app
+    - ./data/app:/data/app
    ports:
     -  51005:51005
    command: 'node server.js'
 
- db: 
+ db:
+   container_name: mysql 
    image: mysql:latest
    volumes:
     - ./data/mysql:/data/mysql
@@ -28,9 +31,17 @@ services:
    ports:
     - 3306:3306
    environment:
-     MYSQL_ROOT_PASSWORD:  password
-     MYSQL_USER: root 
-
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: mysql
+      MYSQL_USER: mateen
+      MYSQL_PASSWORD: password
+   
+   healthcheck: 
+    test: ["CMD", "curl", "-f", "localhost"]
+    interval: 30s
+    timeout: 5s
+    retries: 1
+    start_period: 30s
 
 volumes: 
   data:
