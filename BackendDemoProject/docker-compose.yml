@@ -1,26 +1,37 @@
-version: '3.9'
+version: '3.7'
 
 services:
 
- mongo_db:
-  container_name: db_container
-  image: mongo:latest
-  restart: always
-  volumes:
-    - mongo_db:/data/db
-
-
- api:
-   build: .
+ mongo:
    ports:
-    - 4000:3000
-   environment:
-     port: 3000
-     MONGODB_URI: mongodb://mongo_db:27017  
-     DB_NAME: my_db
-     NAME: Mateen
-   depends_on:
-     - mongo_db
+    - 27017:27017
+   image: mongo:latest
+   volumes:
+    - ./data/mongo:/data/db
 
-volumes:
- mongo_db: {}       
+
+ app:
+   image: node:10
+   working_dir: /home/node/app
+   restart: always
+   volumes:
+    - ./data/app:/home/node/app
+   ports:
+    -  51005:51005
+   command: 'node server.js'
+
+ db: 
+   image: mysql:latest
+   volumes:
+    - ./data/mysql:/data/mysql
+   restart: always
+   ports:
+    - 3306:3306
+   environment:
+     MYSQL_ROOT_PASSWORD:  password
+     MYSQL_USER: root 
+
+
+volumes: 
+  data:
+       
