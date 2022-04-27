@@ -1,0 +1,43 @@
+$sudo apt-get update
+
+$sudo apt-get install nginx
+
+enable yourfirwall
+ $sudo ufw enable
+
+enable to firwall list the appln the firwall load
+   $sudo ufw app list
+   $to enable HTTP and HTTPS
+   $sudo ufw allow 'Nginx HTTP'
+   $sudo ufw allow 'Nginx HTTPS'
+
+check status
+$ sudo ufw status
+
+check nginx runing
+$  sudo systemctl status nginx
+
+
+copy application to /var/www/
+
+add ip address and domain name in hosts file
+ $ sudo vi /etc/hosts  
+
+
+to config nginx server
+ 
+$sudo  vi sites-available/demo
+ mension parameter
+  like
+
+server {
+listen 80 default_server;
+listen [::] default_server;
+root /var/www/demo;
+index index.html
+server_name dem0;
+location / {
+try_file $url $url/ =404;
+}
+}
+
